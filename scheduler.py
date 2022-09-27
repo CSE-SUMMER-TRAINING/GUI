@@ -1,13 +1,11 @@
 import sys
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QApplication, QLabel, QPushButton, QFileDialog, QComboBox,  QTableWidget, QTableWidgetItem, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QPushButton, QFileDialog, QComboBox,  QTableWidget, QTableWidgetItem, QVBoxLayout
 from PyQt5.uic import loadUi
 import openpyxl
 
 # 1
-
-
-class MainWindow(QDialog):
+class MainWindow(QWidget):
     def __init__(self):
         super(MainWindow, self).__init__()
         loadUi("screen1.ui", self)
@@ -19,16 +17,14 @@ class MainWindow(QDialog):
         self.exam.clicked.connect(self.exScreen)
 
     def invScreen(self):
-        widget.addWidget(invScreen1())
-        widget.setCurrentIndex(widget.currentIndex()+1)
+        widget.setCurrentWidget(invscreen1)
 
     def exScreen(self):
-        widget.addWidget(exScreen1())
-        widget.setCurrentIndex(widget.currentIndex()+1)
+        widget.setCurrentWidget(exscreen1)
 
 
 # 2
-class invScreen1(QDialog):
+class invScreen1(QWidget):
     def __init__(self):
         super(invScreen1, self).__init__()
         loadUi("screenInv1.ui", self)
@@ -39,7 +35,7 @@ class invScreen1(QDialog):
 
         self.browse.clicked.connect(self.browsefiles)
         self.generate.clicked.connect(self.generateTables)
-        # self.back.clicked.connect(self.goBack)
+        self.back.clicked.connect(self.goBack)
 
         self.txt = ""
 
@@ -50,22 +46,22 @@ class invScreen1(QDialog):
         self.txt = fname
 
     def goBack(self):
-        widget.addWidget(MainWindow())
-        widget.setCurrentIndex(widget.currentIndex()-1)
+        widget.setCurrentWidget(mainwindow)
 
     def generateTables(self):
         if (self.txt != ""):
-            widget.addWidget(invScreen2())
-            widget.setCurrentIndex(widget.currentIndex()+1)
+            s2 = invScreen2()
+            widget.addWidget(s2)
+            widget.setCurrentWidget(s2)
 
 
 # 3
-class invScreen2(QDialog):
+class invScreen2(QWidget):
     def __init__(self):
         super(invScreen2, self).__init__()
         loadUi("screenInv2.ui", self)
         self.back = self.findChild(QPushButton, "back")
-        # self.back.clicked.connect(self.backfrominv_fun)
+        self.back.clicked.connect(self.backfrominv_fun)
 
         self.browse = self.findChild(QPushButton, "browse")
         self.browse.clicked.connect(self.browsefiles)
@@ -98,23 +94,22 @@ class invScreen2(QDialog):
         self.label_dep.setText("ارشيف")
 
     def backfrominv_fun(self):
-        widget.addWidget(invScreen1())
-        widget.setCurrentIndex(widget.currentIndex() - 1)
+        widget.setCurrentWidget(invscreen1)
 
 
 # 4
-class exScreen1(QDialog):
+class exScreen1(QWidget):
     def __init__(self):
         super(exScreen1, self).__init__()
         loadUi("screenEx1.ui", self)
         self.browse = self.findChild(QPushButton, "browse")
         self.generate = self.findChild(QPushButton, "generate")
-        #self.back = self.findChild(QPushButton, "back")
+        self.back = self.findChild(QPushButton, "back")
         self.label = self.findChild(QLabel, "lineEdit")
 
         self.browse.clicked.connect(self.browsefiles)
         self.generate.clicked.connect(self.generateTables)
-        # self.back.clicked.connect(self.goBack)
+        self.back.clicked.connect(self.goBack)
 
         self.txt = ""
 
@@ -125,24 +120,24 @@ class exScreen1(QDialog):
         self.txt = fname
 
     def goBack(self):
-        widget.addWidget(MainWindow())
-        widget.setCurrentIndex(widget.currentIndex()-1)
+        widget.setCurrentWidget(mainwindow)
 
     def generateTables(self):
         if (self.txt != ""):
-            widget.addWidget(exScreen2())
-            widget.setCurrentIndex(widget.currentIndex()+1)
+            s1 = exScreen2()
+            widget.addWidget(s1)
+            widget.setCurrentWidget(s1)
 
 
 # 5
-class exScreen2(QDialog):
+class exScreen2(QWidget):
 
     def __init__(self):
         super(exScreen2, self).__init__()
         loadUi("screenEx2.ui", self)
 
         self.back = self.findChild(QPushButton, "back")
-        # self.back.clicked.connect(self.backfromex_fun)
+        self.back.clicked.connect(self.backfromex_fun)
 
         self.browse = self.findChild(QPushButton, "browse")
         self.browse.clicked.connect(self.browsefiles)
@@ -158,13 +153,13 @@ class exScreen2(QDialog):
         self.list3 = ["First floor", "Second floor", "third floor"]
         self.comboxfl.addItems(self.list3)
 
-        #self.select1 = self.findChild(QPushButton, "select11")
+        # self.select1 = self.findChild(QPushButton, "select11")
         # self.select1.clicked.connect(self.valueOfCombo)
 
-       # self.select2 = self.findChild(QPushButton, "select22")
+        # self.select2 = self.findChild(QPushButton, "select22")
         # self.select2.clicked.connect(self.valueOfCombo)
 
-        #self.select3 = self.findChild(QPushButton, "select11_2")
+        # self.select3 = self.findChild(QPushButton, "select11_2")
         # self.select3.clicked.connect(self.valueOfCombo)
 
         self.table_widget = self.findChild(QTableWidget, "tableWidgetexam")
@@ -176,14 +171,17 @@ class exScreen2(QDialog):
             self, 'Open file', '', 'Excel (*.csv *xls)')
 
     def backfromex_fun(self):
-        widget.addWidget(exScreen1())
-        widget.setCurrentIndex(widget.currentIndex() - 1)
+        widget.setCurrentWidget(exscreen1)
 
 
 app = QApplication(sys.argv)
 widget = QtWidgets.QStackedWidget()
 mainwindow = MainWindow()
+exscreen1 = exScreen1()
+invscreen1 = invScreen1()
 widget.addWidget(mainwindow)
+widget.addWidget(exscreen1)
+widget.addWidget(invscreen1)
 widget.setFixedWidth(780)
 widget.setFixedHeight(690)
 widget.show()
